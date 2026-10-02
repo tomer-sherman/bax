@@ -26,6 +26,9 @@ importers:
       error-color-logger:
         specifier: ^1.0.0
         version: 1.0.0
+      izitoast:
+        specifier: ^1.4.0
+        version: 1.4.0
       plasmo:
         specifier: 0.90.5
         version: 0.90.5(@swc/core@1.16.12(@swc/helpers@0.5.23))(@swc/helpers@0.5.23)(@types/node@20.11.5)(mustache@4.2.0)(postcss@8.5.28)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(supports-color@7.2.0)
@@ -35,6 +38,9 @@ importers:
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
+      react-hook-form:
+        specifier: ^7.89.0
+        version: 7.89.0(@types/react@18.2.48)(react@18.2.0)
       zod:
         specifier: ^3.24.4
         version: 3.24.4
@@ -2310,6 +2316,9 @@ packages:
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
 
+  izitoast@1.4.0:
+    resolution: {integrity: sha512-Oc1X2wiQtPp39i5VpIjf3GJf5sfCtHKXZ5szx7RareyEeFLUlcEW0FSfBni28+Ul6KNKZRKzhVuWzSP4Xngh0w==}
+
   joycon@3.1.1:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
     engines: {node: '>=10'}
@@ -2880,6 +2889,16 @@ packages:
 
   react-error-overlay@6.0.9:
     resolution: {integrity: sha512-nQTTcUu+ATDbrSD1BZHr5kgSD4oF8OFjxun8uAaL8RwPBacGBNPf/yAuVVdx17N8XNzRDMrZ9XcKZHCjPW+9ew==}
+
+  react-hook-form@7.89.0:
+    resolution: {integrity: sha512-vKcoCfy8RKZDrhSdqsRFp0uEOdS1AhLjOL6hR7Wmfzg1akNxEhaPf5WORx8SgEQPVXakdDyDkqQp+KNxVnnPHg==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      '@types/react': '*'
+      react: ^16.8.0 || ^17 || ^18 || ^19
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   react-refresh@0.14.0:
     resolution: {integrity: sha512-wViHqhAd8OHeLS/IRMJjTSDHF3U9eWi62F/MledQGPdJGDhodXJ9PBLNGr6WWL7qlH12Mt3TyTpbS+hGXMjCzQ==}
@@ -5775,6 +5794,8 @@ snapshots:
 
   isexe@2.0.0: {}
 
+  izitoast@1.4.0: {}
+
   joycon@3.1.1: {}
 
   js-tiktoken@1.0.21:
@@ -6345,6 +6366,12 @@ snapshots:
       scheduler: 0.23.2
 
   react-error-overlay@6.0.9: {}
+
+  react-hook-form@7.89.0(@types/react@18.2.48)(react@18.2.0):
+    dependencies:
+      react: 18.2.0
+    optionalDependencies:
+      '@types/react': 18.2.48
 
   react-refresh@0.14.0: {}
 

@@ -1,6 +1,7 @@
 import * as cheerio from "cheerio";
-import type { MetaDataModel } from "../models/meta-data-model";
 import type { Element as CheerioElement } from "domhandler";
+
+import type { MetaDataModel } from "../models/meta-data-model";
 
 
 class Scraper {
@@ -73,7 +74,7 @@ class Scraper {
 
     // The page as markdown-style lines, in page order — headings keep their level,
     // lists, tables and quotes keep their shape
-    public getPageLines(html: string): string[] {
+    public getPageMarkdown(html: string): string[] {
         const $ = cheerio.load(html);
         $(this.readExclude.join(", ")).remove();
 

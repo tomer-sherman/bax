@@ -1,5 +1,6 @@
-import { z } from "zod";
 import { DynamicStructuredTool } from "@langchain/core/tools";
+import { z } from "zod";
+
 import { pageService } from "../service/page-service";
 import { scraper } from "../utils/scraper";
 

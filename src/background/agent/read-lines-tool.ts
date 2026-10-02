@@ -1,7 +1,8 @@
-import { z } from "zod";
-import { scraper } from "../utils/scraper";
-import { pageService } from "../service/page-service";
 import { DynamicStructuredTool } from "@langchain/core/tools";
+import { z } from "zod";
+
+import { pageService } from "../service/page-service";
+import { scraper } from "../utils/scraper";
 
 
 class CreateReadLinesTool {

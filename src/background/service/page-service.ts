@@ -1,4 +1,5 @@
-import { ClientError, StatusCode } from "~node_modules/error-color-logger/build";
+import { ClientError, StatusCode } from "error-color-logger";
+
 import { scraper } from "../utils/scraper";
 
 
@@ -13,7 +14,7 @@ class PageService {
         const response = await chrome.tabs.sendMessage(tab.id, { type: "get-html" });
         const html = response.data;
 
-        return scraper.getPageLines(html);
+        return scraper.getPageMarkdown(html);
 
     }
 

@@ -1,8 +1,9 @@
-import { ChatOpenAI } from "@langchain/openai";
 import { HumanMessage, SystemMessage, ToolMessage, type BaseMessage } from "@langchain/core/messages";
+import { ChatOpenAI } from "@langchain/openai";
+
 import { appConfig } from "../utils/app-config";
-import { createSkimToolBuilder } from "./skim-tool";
 import { createReadLinesTool } from "./read-lines-tool";
+import { createSkimToolBuilder } from "./skim-tool";
 
 class BaxAgent {
 
@@ -30,6 +31,8 @@ class BaxAgent {
 
     // Run the agent:
     public async run(userPrompt: string): Promise<string> {
+
+        console.log("Agent activated.");
         const messages: BaseMessage[] = [
             new SystemMessage(this.systemPrompt),
             new HumanMessage(userPrompt)
