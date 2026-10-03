@@ -1,9 +1,10 @@
-import { HumanMessage, SystemMessage, ToolMessage, type BaseMessage } from "@langchain/core/messages";
+import { AIMessage, HumanMessage, SystemMessage, ToolMessage, type BaseMessage } from "@langchain/core/messages";
 import { ChatOpenAI } from "@langchain/openai";
 
 import { appConfig } from "../utils/app-config";
 import { createReadLinesTool } from "./read-lines-tool";
 import { createSkimToolBuilder } from "./skim-tool";
+import type { ChatMessage } from "~src/shared/models";
 
 class BaxAgent {
 
@@ -30,12 +31,13 @@ class BaxAgent {
     private maxSteps = 8;
 
     // Run the agent:
-    public async run(userPrompt: string): Promise<string> {
+    public async run(chat: ChatMessage[]): Promise<string> {
+
 
         console.log("Agent activated.");
         const messages: BaseMessage[] = [
             new SystemMessage(this.systemPrompt),
-            new HumanMessage(userPrompt)
+            ...chat.map(m => m.role === "human" ? new HumanMessage(m.content) : new AIMessage(m.content))
         ];
 
         for (let step = 0; step < this.maxSteps; step++) {

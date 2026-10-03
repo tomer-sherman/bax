@@ -1,3 +1,168 @@
+# Popup design: "The Highlighter"
+
+Read this before you touch the popup's styling.
+
+- Styles: `src/popup/index.css` (the only file you style in)
+- Markup: `src/popup/index.tsx` (read only, see Rules)
+
+## Rules
+
+These are standing rules for any agent working on the popup design.
+
+1. **CSS only.** Edit only the popup's existing CSS file (`src/popup/index.css`). Do not modify, rename, or create any `.ts` or `.tsx` file.
+2. **Extend, don't overhaul.** Keep every existing rule, token, and visual decision. Reuse the existing custom properties (colors, spacing, radii, type sizes). Add a new token only when nothing existing fits, and define it next to the existing ones in the same style.
+3. **Ask before markup changes.** If the design needs a markup change (for example, a className or an extra wrapper element), stop BEFORE writing any CSS and ask the user. List each change with the file, the exact line to add or change, and why it's needed. Wait for the answer. If the answer is no, build the best version possible with the existing markup.
+
+## Theme
+
+### Concept
+
+Bax reads a noisy page and marks the one thing you needed. The popup is a sheet of cool paper with blue-black ink and graphite. There is one accent with one meaning: **Bax blue is Bax's mark.** At full strength it marks things: the bar in the margin beside an answer, the sweep while Bax reads, and the rose icon. The pale tint (`--mark-soft`) only ever sits behind text (the wordmark swipe, `<strong>`, selection), so text stays readable. The interface uses a sans; Bax's answers use a reading serif.
+
+In the chat, your words sit on the same white sheet as the field you typed them into, on the right. Bax's answers keep the marker in the margin, on the left. Never color the user's messages blue: blue means Bax.
+
+### Color
+
+| Token | Hex | Used for |
+|---|---|---|
+| `--paper` | `#f8fafd` | Popup background |
+| `--sheet` | `#ffffff` | Input field, user's chat messages |
+| `--ink` | `#121722` | Text, send key, focus rings |
+| `--graphite` | `#566070` | Secondary text (captions, hint, list markers) |
+| `--pencil` | `#6e7787` | Placeholder, disabled key glyph |
+| `--noise` | `#e3e8f0` | The "page lines" illustration, disabled key, `pre` border |
+| `--rule` | `#d6dce6` | Field and user-message border |
+| `--rule-strong` | `#aeb7c6` | Hovered field border, scrollbar thumb |
+| `--mark` | `#2b5bf5` | **Bax blue**: answer margin bar, reading sweep, rose, link underline |
+| `--mark-soft` | `#cadbff` | Tint behind text only: wordmark swipe, `strong`, selection |
+| `--wash` | `#eff3f9` | Disabled field, inline `code`, `pre` |
+| `--alarm` | `#c0271c` | Validation error text and border |
+| `--alarm-wash` | `#fdeeec` | Validation error background |
+
+### Type
+
+| Token | Value |
+|---|---|
+| `--font-ui` | Segoe UI Variable Text / Segoe UI / system-ui… (sans) |
+| `--font-read` | Charter / Sitka Text / Iowan Old Style / Cambria / Georgia (serif, for answers) |
+| `--font-code` | ui-monospace / Cascadia Mono / SF Mono / Consolas… |
+| `--text-xs` | 12.5px (error) |
+| `--text-sm` | 13.5px (captions, hint) |
+| `--text-ui` | 15px (interface, field, user messages) |
+| `--text-read` | 16px (Bax's answers) |
+| `--text-brand` | 16px (wordmark, weight 650) |
+| `--leading-ui` | 1.4 |
+| `--leading-read` | 1.62 |
+
+### Space
+
+`--s1` 4px · `--s2` 8px · `--s3` 12px · `--s4` 16px · `--s5` 20px · `--s6` 28px
+
+### Shape (each radius belongs to one kind of thing)
+
+| Token | Value | Belongs to |
+|---|---|---|
+| `--r-field` | 14px | The field and things on its sheet (user messages) |
+| `--r-key` | 9px | The send key (field radius minus its 5px inset, so the corners are concentric) |
+| `--r-chip` | 4px | Inline code |
+| `--r-block` | 8px | Blocks: error, `pre` |
+| `--r-swipe` | `3px 7px 4px 8px / 7px 3px 8px 4px` | The hand-drawn marker swipe behind "Ask Bax" |
+| `--mark-w` | 4px | Width of the answer's margin bar |
+
+### Size
+
+`--popup-w` 520px (wider makes answer lines too long to read) · `--popup-h` 600px (Chrome's popup ceiling) · `--field-h` 50px · `--key` 38px · `--icon` 26px · `--icon-gap` 10px
+
+The page illustration ("four lines of noise", used by the empty state and the loading state) is built from `--line-h` 6px, `--line-gap` 13px, `--page-lines`, `--page-sizes`, `--page-pos` and `--page-h`.
+
+### Motion
+
+| Token | Value |
+|---|---|
+| `--ease-out` | `cubic-bezier(0.16, 1, 0.3, 1)` |
+| `--t-fast` | 120ms (hover, press) |
+| `--t-mid` | 220ms (focus glow, settle) |
+| `--t-draw` | 520ms (marker drawing down the margin) |
+| `--t-read` | 2.6s (one loop of the reading sweep) |
+
+| Keyframes | What it does |
+|---|---|
+| `bax-mark` | The answer's margin bar draws from top to bottom |
+| `bax-settle` | Fade in plus a 4px rise. Used by answers, user messages, and the chat's loading block |
+| `bax-read` | The marker sweeps the four page lines, one stroke per line |
+
+Under `prefers-reduced-motion: reduce`, every animation and transition inside `.IndexPopup` is switched off. The reading marker rests on one line, and the chat scrolls instantly instead of smoothly.
+
+## Markup map
+
+```tsx
+<div className="IndexPopup">
+  <form>
+    <label><span className="brand-icon"><img/></span>Ask Bax</label>
+    <input type="text"/>
+    <button aria-label="Ask"/>
+    {error && <span role="alert">…</span>}
+  </form>
+  <p></p>                                        {/* always empty: the first-open hint */}
+  <div className="chat" role="log" ref={chatRef}>  {/* empty until the first question */}
+    {chat.map(m => <div key={m.id}>
+      <p className="humanMessage">…</p>  or  <p className="baxResponse">…</p>
+    </div>)}
+    {loading && <span>Loading...</span>}
+  </div>
+</div>
+```
+
+Behavior that lives in the TSX rather than the CSS: a `useEffect` calls `chatRef.current.lastElementChild.scrollIntoView({ block: "nearest" })` whenever `chat` or `loading` changes. Long answers open at their first line, and short ones scroll fully into view. Smoothness comes from the CSS (`scroll-behavior` on `.chat`), so reduced motion is respected there. `role="log"` makes screen readers announce new messages.
+
+## Components
+
+### Popup states
+
+| State | Trigger | Layout |
+|---|---|---|
+| First open | `.chat` is `:empty` | Flex column: form (wordmark + field) on top, empty-state hint centred below |
+| Chat | `.IndexPopup:has(> .chat:not(:empty))` | Grid with areas `brand / chat / field / error`. The form becomes `display: contents`, so its children land in the popup's grid. The wordmark stays top-left, the log fills the middle, and the field is pinned at the bottom |
+
+### Parts
+
+| Part | Selector | Purpose |
+|---|---|---|
+| Root | `.IndexPopup` | Fixed 520×600 sheet of paper, never scrolls (`overflow: hidden`) |
+| Ask form | `.IndexPopup form` | Grid (`brand / field / error`). `display: contents` in chat mode |
+| Wordmark | `.IndexPopup label`, `label::before` | Rose plus "Ask Bax", with the `--mark-soft` hand-drawn swipe behind the text |
+| Rose | `.IndexPopup .brand-icon`, `.brand-icon img` | A green PNG re-inked to Bax blue through blend modes (grayscale, screen over blue, multiply onto paper) |
+| Field | `.IndexPopup input` | White sheet with `--r-field`. Hover: `--rule-strong`. Focus: ink edge plus a blue glow. Disabled: dashed and washed |
+| Send key | `.IndexPopup button`, `button::before` | Ink key set inside the field. The arrow is a CSS mask. Hover turns it blue and nudges the arrow, press scales it down |
+| Validation error | `.IndexPopup form > span`, `[role="alert"]` | `--alarm` on `--alarm-wash`, under the field. Also turns the field border red |
+| Answer typography | `.IndexPopup > p`, `.IndexPopup .baxResponse` | Reading serif, `--text-read` / `--leading-read`, `pre-wrap`, wraps long words and URLs, blue margin bar (`background … local`) |
+| Answer entrance | `.IndexPopup > p:not(:empty)`, `.IndexPopup .baxResponse` | `bax-mark` + `bax-settle` |
+| Rich text in answers | `… :is(ul, ol)`, `li`, `strong`, `a`, `code`, `pre` | Ready for markdown if it's ever rendered as HTML. Today answers are plain text |
+| Empty state | `.IndexPopup > p:empty`, `::before`, `::after` | First-open illustration (page lines with one line marked) and the hint text |
+| Loading | `.IndexPopup > span`, `.IndexPopup .chat > span` (+ `::before`, `::after`) | Four noise lines with the blue marker sweeping them, captioned "Reading the page". The span's own text stays for assistive tech |
+| **Chat log** | `.IndexPopup .chat` | Scrolls inside its own area. Edges fade into the paper (`mask-image`), the scrollbar gutter is held (`stable`), `scroll-padding` keeps scrolled-to messages clear of the fade, and it scrolls smoothly |
+| Chat focus | `.IndexPopup .chat:focus-visible` | Ink ring; the fade lifts so the ring shows |
+| **Chat rhythm** | `.chat > * + *` and the two `:has()` sibling rules | Same speaker again: `--s2`. Answer (or loading) under its question: `--s4`. A new question after an answer: `--s6` |
+| **User message** | `.IndexPopup .humanMessage` | Right-aligned, `fit-content` up to 85% wide. White `--sheet` with a `--rule` border, `--r-field`, and the field's 1px shadow. UI sans at `--text-ui`, ink. Enters with `bax-settle` |
+| **Bax message** | `.IndexPopup .chat .baxResponse` | The answer typography above, flowing in the log. `margin: 0` and `overflow: visible`, so it is not a nested scroller (one would swallow the scroll wheel) |
+| **Chat loading** | `.IndexPopup .chat > span` | Indented to the answer's text column (`--mark-w + --s4`) so the answer lands in its place. Enters with `bax-settle` |
+
+### Legacy rules (kept per Rule 2)
+
+Some rules were written for the earlier single-answer markup, where the answer filled `.IndexPopup > p` and the loading span was a direct child of `.IndexPopup`. These don't match the current markup but are kept: `.IndexPopup:has(> span) …` (hide hint, dim previous answer, add air), `.IndexPopup > span`'s `order: -1` and `margin-top`, and the non-empty `.IndexPopup > p` scrolling behavior.
+
+### Gotchas
+
+- Chat mode depends on `.chat` being truly `:empty` when there are no messages. Don't add whitespace text or always-rendered children inside it.
+- The empty `<p></p>` must stay a direct child of `.IndexPopup`. It is the first-open hint.
+- Anything inside `.chat` that sets `overflow` creates a nested scroller. Keep message elements at `overflow: visible`.
+- `--mark` is only for Bax. User-side elements use `--sheet`, `--rule` and `--ink`.
+
+## Full CSS
+
+The CSS file in the codebase (`src/popup/index.css`) is the source of truth. If this copy and the file ever differ, the file wins.
+
+```css
 /*
   Bax popup — "The Highlighter".
   Bax reads a noisy page and marks the one thing you needed.
@@ -736,3 +901,4 @@ body {
     scroll-behavior: auto;
   }
 }
+```
