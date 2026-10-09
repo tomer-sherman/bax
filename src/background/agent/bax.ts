@@ -2,14 +2,13 @@ import { AIMessage, HumanMessage, SystemMessage, ToolMessage, type BaseMessage }
 import { ChatOpenAI } from "@langchain/openai";
 
 import { appConfig } from "../utils/app-config";
-import { createReadLinesTool } from "./read-lines-tool";
-import { createSkimToolBuilder } from "./skim-tool";
 import type { ChatMessage } from "~src/shared/models";
+import { createMdToolBuilder } from "./read-markdown-tool";
 
 class BaxAgent {
 
     // Agent tools:
-    private tools = [createSkimToolBuilder, createReadLinesTool];
+    private tools = [createMdToolBuilder];
 
     // Agent LLM, with the tools attached:
     private model = new ChatOpenAI({
@@ -20,10 +19,9 @@ class BaxAgent {
 
     // System Prompt:
     private systemPrompt = `
-    You are Bax, an assistant that answers questions about the web page the user is viewing.
-    Always start by calling skim_page to see the page structure.
-    Then call read_lines on the ranges you need before answering.
-    Answer only from the page content. If the answer isn't on the page, say so.
+    You are bax, a personal browser extention assistant, when initiated use first the mark_down_overview tool
+    to view the page content. then answer then help the user.
+    You may answer not only from the content of the page, But if you do say so.
     Be concise.
     `;
 

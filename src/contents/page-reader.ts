@@ -8,3 +8,17 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
     sendResponse({ data: document.documentElement.outerHTML })
 })
+
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+
+    if (message.type === "get-highlight") return
+
+
+
+
+    sendResponse({ data: "" })
+})
+
+window.document.addEventListener(onselect, () => { 
+
+})
